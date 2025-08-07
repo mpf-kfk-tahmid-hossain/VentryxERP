@@ -237,11 +237,11 @@ A comprehensive Enterprise Resource Planning (ERP) software designed to provide 
 - **Security**: HTTPS, data encryption, secure authentication
 
 ### 4.2 Technology Stack
-- **Frontend**: React.js/Vue.js with responsive design
-- **Backend**: Python (Django/Flask) or Node.js
-- **Database**: PostgreSQL or MySQL
+- **Frontend**: React.js with responsive design
+- **Backend**: Python Django
+- **Database**: PostgreSQL
 - **Authentication**: JWT tokens with refresh mechanism
-- **File Storage**: Cloud storage integration (AWS S3, Azure Blob)
+- **File Storage**: For Prod Cloud storage integration (AWS S3) and for DEV (Local)
 
 ### 4.3 Performance Requirements
 - Page load time < 3 seconds
