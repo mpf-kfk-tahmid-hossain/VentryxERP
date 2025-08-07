@@ -37,6 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # Custom ERP Apps
+    'core',
+    'users',
+    'finance',
+    'inventory',
+    'sales',
 ]
 
 MIDDLEWARE = [
@@ -54,7 +61,7 @@ ROOT_URLCONF = 'ventryx_erp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -120,3 +127,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Login/Logout URLs
+LOGIN_URL = '/admin/login/'
+LOGIN_REDIRECT_URL = '/users/dashboard/'
+LOGOUT_REDIRECT_URL = '/admin/login/'

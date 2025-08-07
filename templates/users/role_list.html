@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Role Management - Ventryx ERP{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">Role Management</h1>
+            <a href="{% url 'admin:users_role_add' %}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>
+                Add New Role
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user-tag me-2"></i>
+                    All Roles
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if roles %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Role Name</th>
+                                    <th>Description</th>
+                                    <th>Permissions</th>
+                                    <th>Status</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for role in roles %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ role.name }}</strong>
+                                        </td>
+                                        <td>
+                                            {{ role.description|default:"No description" }}
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info">{{ role.permissions.count }} permissions</span>
+                                        </td>
+                                        <td>
+                                            {% if role.is_active %}
+                                                <span class="badge bg-success">Active</span>
+                                            {% else %}
+                                                <span class="badge bg-danger">Inactive</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ role.created_at|date:"M d, Y" }}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="{% url 'admin:users_role_change' role.id %}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="{% url 'admin:users_role_delete' role.id %}" class="btn btn-sm btn-outline-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-0">No roles found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Stats -->
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-primary">{{ roles.count }}</h4>
+                <small class="text-muted">Total Roles</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-success">{{ roles.count }}</h4>
+                <small class="text-muted">Active Roles</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-info">0</h4>
+                <small class="text-muted">Total Permissions</small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

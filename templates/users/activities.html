@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}User Activities - Ventryx ERP{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="h3 mb-4">User Activities</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-history me-2"></i>
+                    Recent User Activities
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if activities %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Activity</th>
+                                    <th>Module</th>
+                                    <th>Description</th>
+                                    <th>IP Address</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for activity in activities %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ activity.user.username }}</strong><br>
+                                            <small class="text-muted">{{ activity.user.get_full_name|default:"No name" }}</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-{% if activity.activity_type == 'login' %}success{% elif activity.activity_type == 'logout' %}secondary{% elif activity.activity_type == 'create' %}primary{% elif activity.activity_type == 'update' %}warning{% elif activity.activity_type == 'delete' %}danger{% else %}info{% endif %}">
+                                                {{ activity.get_activity_type_display }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {% if activity.app_label and activity.model_name %}
+                                                {{ activity.app_label|title }} - {{ activity.model_name|title }}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {{ activity.description }}
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">{{ activity.ip_address|default:"-" }}</small>
+                                        </td>
+                                        <td>
+                                            {{ activity.created_at|date:"M d, Y H:i" }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-0">No activities found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Activity Stats -->
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-primary">{{ activities.count }}</h4>
+                <small class="text-muted">Total Activities</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-success">{{ activities.count }}</h4>
+                <small class="text-muted">Today's Activities</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-info">{{ activities.count }}</h4>
+                <small class="text-muted">This Week</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-warning">{{ activities.count }}</h4>
+                <small class="text-muted">This Month</small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

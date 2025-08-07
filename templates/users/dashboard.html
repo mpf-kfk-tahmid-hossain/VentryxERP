@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Ventryx ERP{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="h3 mb-4">Welcome, {{ user.get_full_name|default:user.username }}!</h1>
+    </div>
+</div>
+
+<div class="row">
+    <!-- User Info Card -->
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user me-2"></i>
+                    User Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <p class="mb-1"><strong>Username:</strong></p>
+                        <p class="mb-1"><strong>Email:</strong></p>
+                        <p class="mb-1"><strong>Department:</strong></p>
+                        <p class="mb-1"><strong>Position:</strong></p>
+                    </div>
+                    <div class="col-6">
+                        <p class="mb-1">{{ user.username }}</p>
+                        <p class="mb-1">{{ user.email }}</p>
+                        <p class="mb-1">{{ profile.department|default:"Not set" }}</p>
+                        <p class="mb-1">{{ profile.position|default:"Not set" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Roles Card -->
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-user-tag me-2"></i>
+                    Your Roles
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if user_roles %}
+                    <ul class="list-unstyled mb-0">
+                        {% for user_role in user_roles %}
+                            <li class="mb-2">
+                                <span class="badge bg-primary">{{ user_role.role.name }}</span>
+                                {% if user_role.role.description %}
+                                    <small class="text-muted d-block">{{ user_role.role.description }}</small>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted mb-0">No roles assigned</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Card -->
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>
+                    Quick Stats
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h4 class="text-primary">{{ user_roles.count }}</h4>
+                        <small class="text-muted">Roles</small>
+                    </div>
+                    <div class="col-6">
+                        <h4 class="text-success">{{ recent_activities.count }}</h4>
+                        <small class="text-muted">Recent Activities</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activities -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-history me-2"></i>
+                    Recent Activities
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if recent_activities %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Activity</th>
+                                    <th>Module</th>
+                                    <th>Description</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for activity in recent_activities %}
+                                    <tr>
+                                        <td>
+                                            <span class="badge bg-{% if activity.activity_type == 'login' %}success{% elif activity.activity_type == 'logout' %}secondary{% elif activity.activity_type == 'create' %}primary{% elif activity.activity_type == 'update' %}warning{% elif activity.activity_type == 'delete' %}danger{% else %}info{% endif %}">
+                                                {{ activity.get_activity_type_display }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {% if activity.app_label and activity.model_name %}
+                                                {{ activity.app_label|title }} - {{ activity.model_name|title }}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ activity.description }}</td>
+                                        <td>{{ activity.created_at|date:"M d, Y H:i" }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-0">No recent activities</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-bolt me-2"></i>
+                    Quick Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <a href="{% url 'users:profile' %}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-user-edit me-2"></i>
+                            Edit Profile
+                        </a>
+                    </div>
+                    {% if user.is_staff %}
+                    <div class="col-md-3 mb-3">
+                        <a href="{% url 'users:user_list' %}" class="btn btn-outline-secondary w-100">
+                            <i class="fas fa-users me-2"></i>
+                            Manage Users
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <a href="{% url 'users:role_list' %}" class="btn btn-outline-info w-100">
+                            <i class="fas fa-user-tag me-2"></i>
+                            Manage Roles
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <a href="{% url 'admin:index' %}" class="btn btn-outline-dark w-100">
+                            <i class="fas fa-cog me-2"></i>
+                            Admin Panel
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

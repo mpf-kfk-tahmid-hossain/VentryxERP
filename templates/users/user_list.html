@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% block title %}User Management - Ventryx ERP{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">User Management</h1>
+            <a href="{% url 'admin:auth_user_add' %}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>
+                Add New User
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-users me-2"></i>
+                    All Users
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if users %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Full Name</th>
+                                    <th>Email</th>
+                                    <th>Department</th>
+                                    <th>Position</th>
+                                    <th>Status</th>
+                                    <th>Staff</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ user.username }}</strong>
+                                        </td>
+                                        <td>
+                                            {{ user.get_full_name|default:"Not set" }}
+                                        </td>
+                                        <td>
+                                            {{ user.email|default:"Not set" }}
+                                        </td>
+                                        <td>
+                                            {{ user.profile.department|default:"Not set" }}
+                                        </td>
+                                        <td>
+                                            {{ user.profile.position|default:"Not set" }}
+                                        </td>
+                                        <td>
+                                            {% if user.is_active %}
+                                                <span class="badge bg-success">Active</span>
+                                            {% else %}
+                                                <span class="badge bg-danger">Inactive</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if user.is_staff %}
+                                                <span class="badge bg-primary">Staff</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">User</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="{% url 'admin:auth_user_change' user.id %}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="{% url 'admin:auth_user_delete' user.id %}" class="btn btn-sm btn-outline-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-0">No users found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Stats -->
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-primary">{{ users.count }}</h4>
+                <small class="text-muted">Total Users</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-success">{{ users|length|add:"-1" }}</h4>
+                <small class="text-muted">Active Users</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-info">{{ users|length|add:"-1" }}</h4>
+                <small class="text-muted">Staff Members</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-warning">0</h4>
+                <small class="text-muted">New This Month</small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
