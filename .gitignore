@@ -1,5 +1,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/python,django,react,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,django,react,windows
+create_github_issues_personal.py
+GITHUB__README.md
 
 ### Django ###
 *.log
